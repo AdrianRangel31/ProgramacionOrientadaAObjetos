@@ -1,0 +1,10 @@
+from tkinter import *
+ventana = Tk()
+ventana.geometry("800x600")
+ventana.title("Etiquetas")
+label = Label(ventana,text="holaaaaaaaaaaaaaaaaaa").pack()
+marco = Frame(ventana,bg="#f59292",width=300,height=150)
+marco.pack_propagate(False)
+marco.pack()
+etiqueta2 = Label(marco,text="soy una etiqueta dentro de un marco",bg="#f59292").pack(fill=BOTH,ipady=100)
+ventana.mainloop()
