@@ -1,14 +1,26 @@
-import tkinter as tk
-from controller.controller import MainController
-from view.view import aplicar_estilos
+"""     
+1er diciembre
+    1)Implementación de MVC
+    2)
+    3)
+        3.1 menu_principal()
+        3.2 menu_acciones()
+        3.3 insertar_autos()
+
+    Productos Entregables:
+        *Estructura del proyecto basado en MVC
+        *Interacción con las interfaces
+        *Commit: "commit_01_12_25"
+"""
+from tkinter import *
+from view import view
+
+class App:
+    def __init__(self,ventana):
+        vista = view.Vista(ventana)
+
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("Sistema de Gestión de Vehículos ")
-    root.geometry("950x700")
-    root.configure(bg="#f0f0f0")
-    
-    aplicar_estilos()
-    
-    app = MainController(root)
-    root.mainloop()
+    ventana = Tk()
+    app = App(ventana)
+    ventana.mainloop()   

@@ -1,158 +1,139 @@
-from conexion import ConexionBD
+from ConexionBD import *
 
-class CochesModel:
-    @staticmethod
-    def read_all():
+class AutosBD:
+    def __init__(self,marca,color,modelo,velocidad,caballaje,plazas):
+        self._marca = marca
+        self._color = color
+        self._modelo = modelo
+        self._velocidad = velocidad
+        self._caballaje = caballaje
+        self._plazas = plazas
+
+    def insertar(self):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM coches")
-            res = cursor.fetchall()
-            cursor.close()
-            return res
-        except Exception as e:
-            print(e)
+            cursor.execute("insert into coches values(null,%s,%s,%s,%s,%s,%s)",
+                           (self._color,self._marca,self._modelo,self._velocidad,self._caballaje,self._plazas))
+            conexion.commit()
+            return True
+        except:
+            return False
+    @staticmethod
+    def consultar():
+        try:
+            cursor.execute("Select * from coches")
+            return cursor.fetchall()
+        except:
             return []
+    
+    @staticmethod
+    def actualizar(color,marca,modelo,velocidad,potencia,plazas,id):
+        try:
+            cursor.execute(f"update coches set Color = '{color}',Marca = '{marca}',Modelo = '{modelo}',Velocidad = '{velocidad}',Caballaje = '{potencia}',Plazas = '{plazas}' where ID_Coches = {id}")
+            conexion.commit()
+            return True
+        except:
+            return False
+            
+    @staticmethod
+    def eliminar(id):
+        try:
+            cursor.execute("delete from coches where id_coches = %s",(id,))
+            conexion.commit()
+            return True
+        except:
+            return False
+
+class CamionetasBD:
+    def __init__(self,marca,color,modelo,velocidad,caballaje,plazas,traccion,cerrada):
+        self._marca = marca
+        self._color = color
+        self._modelo = modelo
+        self._velocidad = velocidad
+        self._caballaje = caballaje
+        self._plazas = plazas
+        self._traccion = traccion
+        self._cerrada = cerrada
 
     @staticmethod
-    def create(datos):
+    def insertar(color,marca,modelo,velocidad,potencia,plazas,traccion,cerrada):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "INSERT INTO coches (Color, Marca, Modelo, Velocidad, Caballaje, Plazas) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, datos)
-            conn.commit()
-            cursor.close()
+            cursor.execute("insert into camionetas values(null,%s,%s,%s,%s,%s,%s,%s,%s)",
+                           (color,marca,modelo,velocidad,potencia,plazas,traccion,cerrada))
+            conexion.commit()
             return True
-        except Exception:
+        except:
             return False
 
     @staticmethod
-    def update(id_item, datos):
+    def consultar():
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "UPDATE coches SET Color=%s, Marca=%s, Modelo=%s, Velocidad=%s, Caballaje=%s, Plazas=%s WHERE ID_Coches=%s"
-            datos_con_id = list(datos) + [id_item]
-            cursor.execute(query, datos_con_id)
-            conn.commit()
-            cursor.close()
-            return True
-        except Exception:
-            return False
-
-    @staticmethod
-    def delete(id_item):
-        try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM coches WHERE ID_Coches = %s", (id_item,))
-            conn.commit()
-            cursor.close()
-            return True
-        except Exception:
-            return False
-
-class CamionetasModel:
-    @staticmethod
-    def read_all():
-        try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM camionetas")
-            res = cursor.fetchall()
-            cursor.close()
-            return res
-        except Exception:
+            cursor.execute("Select * from camionetas")
+            return cursor.fetchall()
+        except:
             return []
-
+        
     @staticmethod
-    def create(datos):
+    def actualizar(color,marca,modelo,velocidad,potencia,plazas,traccion,cerrada,id):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "INSERT INTO camionetas (Marca, Color, Modelo, Velocidad, Caballaje, Plazas, Traccion, Cerrada) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, datos)
-            conn.commit()
-            cursor.close()
+            cursor.execute(f"update camionetas set Color = '{color}',Marca = '{marca}',Modelo = '{modelo}',Velocidad = '{velocidad}',Caballaje = '{potencia}',Plazas = '{plazas}',Traccion = '{traccion}',Cerrada = '{cerrada}' where ID_Camionetas = {id}")
+            conexion.commit()
             return True
-        except Exception:
+        except:
             return False
-
+            
     @staticmethod
-    def update(id_item, datos):
+    def eliminar(id):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "UPDATE camionetas SET Marca=%s, Color=%s, Modelo=%s, Velocidad=%s, Caballaje=%s, Plazas=%s, Traccion=%s, Cerrada=%s WHERE ID_Camionetas=%s"
-            datos_con_id = list(datos) + [id_item]
-            cursor.execute(query, datos_con_id)
-            conn.commit()
-            cursor.close()
+            cursor.execute("delete from camionetas where ID_Camionetas = %s",(id,))
+            conexion.commit()
             return True
-        except Exception:
+        except:
             return False
+        
+class CamionesBD:
+    def __init__(self,marca,color,modelo,velocidad,caballaje,plazas,eje,capacidad):
+        self._marca = marca
+        self._color = color
+        self._modelo = modelo
+        self._velocidad = velocidad
+        self._caballaje = caballaje
+        self._plazas = plazas
+        self._eje = eje
+        self._capacidad = capacidad
 
     @staticmethod
-    def delete(id_item):
+    def insertar(color,marca,modelo,velocidad,potencia,plazas,eje,capacidad):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM camionetas WHERE ID_Camionetas = %s", (id_item,))
-            conn.commit()
-            cursor.close()
+            cursor.execute("insert into camiones values(null,%s,%s,%s,%s,%s,%s,%s,%s)",
+                           (color,marca,modelo,velocidad,potencia,plazas,eje,capacidad))
+            conexion.commit()
             return True
-        except Exception:
+        except:
             return False
-
-class CamionesModel:
+    
     @staticmethod
-    def read_all():
+    def consultar():
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM camiones")
-            res = cursor.fetchall()
-            cursor.close()
-            return res
-        except Exception:
+            cursor.execute("Select * from camiones")
+            return cursor.fetchall()
+        except:
             return []
-
+            
     @staticmethod
-    def create(datos):
+    def actualizar(color,marca,modelo,velocidad,potencia,plazas,eje,capacidad,id):
         try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "INSERT INTO camiones (Color, Marca, Modelo, Velocidad, Caballaje, Plazas, Eje, Capacidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, datos)
-            conn.commit()
-            cursor.close()
+            cursor.execute(f"update camiones set Color = '{color}',Marca = '{marca}',Modelo = '{modelo}',Velocidad = '{velocidad}',Caballaje = '{potencia}',Plazas = '{plazas}',Eje = '{eje}',Capacidad = '{capacidad}' where ID_Camiones = {id}")
+            conexion.commit()   
             return True
-        except Exception:
+        except:
+            return False
+        
+    @staticmethod
+    def eliminar(id):
+        try:
+            cursor.execute("delete from camiones where id_camiones = %s",(id,))
+            conexion.commit()
+            return True
+        except:
             return False
 
-    @staticmethod
-    def update(id_item, datos):
-        try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            query = "UPDATE camiones SET Color=%s, Marca=%s, Modelo=%s, Velocidad=%s, Caballaje=%s, Plazas=%s, Eje=%s, Capacidad=%s WHERE ID_Camiones=%s"
-            datos_con_id = list(datos) + [id_item]
-            cursor.execute(query, datos_con_id)
-            conn.commit()
-            cursor.close()
-            return True
-        except Exception:
-            return False
-
-    @staticmethod
-    def delete(id_item):
-        try:
-            conn = ConexionBD.get_conexion()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM camiones WHERE ID_Camiones = %s", (id_item,))
-            conn.commit()
-            cursor.close()
-            return True
-        except Exception:
-            return False

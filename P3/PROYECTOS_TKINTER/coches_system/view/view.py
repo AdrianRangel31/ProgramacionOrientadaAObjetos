@@ -1,188 +1,145 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import *
+from tkinter import ttk, messagebox
 
-def aplicar_estilos():
-    style = ttk.Style()
-    style.theme_use('clam')
-    bg_color = "#f0f0f0"
-    primary_color = "#4a90e2"
-    secondary_color = "#e0e0e0"
-    text_color = "#333333"
 
-    style.configure(".", background=bg_color, foreground=text_color, font=("Helvetica", 10))
-    style.configure("TFrame", background=bg_color)
-    style.configure("TLabel", background=bg_color, foreground=text_color)
-    style.configure("TButton", background=primary_color, foreground="white", padding=6, borderwidth=0)
-    style.map("TButton", background=[('active', '#357abd')])
-    style.configure("Treeview", background="white", fieldbackground="white", foreground=text_color, rowheight=25)
-    style.configure("Treeview.Heading", background=secondary_color, foreground=text_color, font=("Helvetica", 10, "bold"))
-    style.map("Treeview", background=[('selected', primary_color)], foreground=[('selected', 'white')])
-    style.configure("Header.TLabel", font=("Helvetica", 16, "bold"), padding=10)
+class Vista:
+    def __init__(self,ventana:Tk):
+        ventana.title("Sistema de Gestión de autos")
+        ventana.geometry("1024x768")
+        ventana.resizable(0,0)
+        self.menu_principal(ventana)
 
-class MenuView(ttk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.setup_ui()
+    @staticmethod
+    def menu_principal(ventana):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=".::Menú principal::.").pack()
+        Button(ventana,text="Autos",width=15,command=lambda:Vista.menu_acciones(ventana,"Autos")).pack(pady=15)
+        Button(ventana,text="Camionetas",width=15,command=lambda:Vista.menu_acciones(ventana,"Camionetas")).pack(pady=15)
+        Button(ventana,text="Camiones",width=15,command=lambda:Vista.menu_acciones(ventana,"Camiones")).pack(pady=15)
+        Button(ventana,text="Salir",width=15,command=lambda:ventana.destroy()).pack(pady=15)
 
-    def setup_ui(self):
-        frame_central = ttk.Frame(self)
-        frame_central.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+    @staticmethod
+    def limpiar_ventana(ventana):
+        for widget in ventana.winfo_children():
+            widget.pack_forget()
 
-        ttk.Label(frame_central, text="Menú Principal", style="Header.TLabel").pack(pady=20)
+    @staticmethod
+    def menu_acciones(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=f".::Menú principal {tipo}::.").pack()
+        Button(ventana,text="1.-Insertar",width=15,command=lambda:Vista.insertar(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="2.-Consultar",width=15,command=lambda:Vista.consultar(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="3.-Actualizar",width=15,command=lambda:Vista.actualizar(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="4.-Eliminar",width=15,command=lambda:Vista.eliminar(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="5.-Regresar",width=15,command=lambda:Vista.menu_principal(ventana)).pack(pady=15)
+
+
+    @staticmethod
+    def insertar(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=f".::Insertar {tipo}::.").pack()
+
+        Label(ventana,text="Marca").pack(pady=15)
+        marca = StringVar()
+        txt_marca= Entry(ventana,textvariable=marca)
+        txt_marca.pack()
+        txt_marca.focus()
+
+        Label(ventana,text="Color").pack(pady=15)
+        Color = StringVar()
+        txt_Color= Entry(ventana,textvariable=Color)
+        txt_Color.pack()
         
-        ttk.Button(frame_central, text="Gestionar Coches", command=lambda: self.controller.show_view("coches")).pack(pady=10, fill=tk.X, ipadx=20)
-        ttk.Button(frame_central, text="Gestionar Camionetas", command=lambda: self.controller.show_view("camionetas")).pack(pady=10, fill=tk.X)
-        ttk.Button(frame_central, text="Gestionar Camiones", command=lambda: self.controller.show_view("camiones")).pack(pady=10, fill=tk.X)
-        ttk.Button(frame_central, text="Salir", command=self.controller.salir).pack(pady=20, fill=tk.X)
+        Label(ventana,text="Modelo").pack(pady=15)
+        Modelo = StringVar()
+        txt_Modelo= Entry(ventana,textvariable=Modelo)
+        txt_Modelo.pack()
 
-class BaseCrudView(ttk.Frame):
-    def __init__(self, parent, controller, titulo, columnas_config):
-        super().__init__(parent)
-        self.controller = controller
-        self.columnas_config = columnas_config
-        self.entries = {}
-        self.selected_id = None
-        self.setup_ui(titulo)
+        Label(ventana,text="Velocidad").pack(pady=15)
+        Velocidad = StringVar()
+        txt_Velocidad= Entry(ventana,textvariable=Velocidad)
+        txt_Velocidad.pack()
 
-    def setup_ui(self, titulo):
-        # Header
-        header = ttk.Frame(self)
-        header.pack(fill=tk.X)
-        ttk.Button(header, text="< Menú", command=self.controller.go_back).pack(side=tk.LEFT, padx=10, pady=10)
-        ttk.Label(header, text=titulo, style="Header.TLabel").pack(side=tk.LEFT)
+        Label(ventana,text="Caballaje").pack(pady=15)
+        Caballaje = StringVar()
+        txt_Caballaje= Entry(ventana,textvariable=Caballaje)
+        txt_Caballaje.pack()
 
-        # Formulario
-        form = ttk.LabelFrame(self, text="Registro", padding=10)
-        form.pack(fill=tk.X, padx=20, pady=10)
+        Label(ventana,text="Plazas").pack(pady=15)
+        Plazas = StringVar()
+        txt_Plazas= Entry(ventana,textvariable=Plazas)
+        txt_Plazas.pack()
+
+
+
+        Button(ventana,text="Guardar",width=15,command=lambda:"").pack(pady=15)
+        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+
+    @staticmethod
+    def consultar(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=f".::Consultar {tipo}::.").pack()
+
+        frame_tabla = Frame(ventana)
+        frame_tabla.pack(fill="both")
+
+        tabla = ttk.Treeview(frame_tabla, columns=("ID", "Color", "Marca", "Modelo","Velocidad","Caballaje","Plazas"), show="headings")
+        tabla.heading("ID", text="ID")
+        tabla.heading("Título", text="Título")
+        tabla.heading("Director", text="Director")
+        tabla.heading("Año", text="Año")
+        tabla.pack(fill="both", expand=True)
+
+        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+
+    @staticmethod
+    def actualizar(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=f".::Actualizar {tipo}::.").pack()
+
+        Label(ventana,text="Marca").pack(pady=15)
+        marca = StringVar()
+        txt_marca= Entry(ventana,textvariable=marca)
+        txt_marca.pack()
+        txt_marca.focus()
+
+        Label(ventana,text="Color").pack(pady=15)
+        Color = StringVar()
+        txt_Color= Entry(ventana,textvariable=Color)
+        txt_Color.pack()
         
-        r, c = 0, 0
-        for col in self.columnas_config:
-            if col['name'] == 'ID': continue # ID autogenerado
-            ttk.Label(form, text=col['label']).grid(row=r, column=c, sticky=tk.W, padx=5, pady=5)
-            
-            if col.get('type') == 'combobox':
-                e = ttk.Combobox(form, values=col.get('values'), state="readonly")
-            else:
-                e = ttk.Entry(form)
-            
-            e.grid(row=r, column=c+1, sticky=tk.EW, padx=5, pady=5)
-            self.entries[col['name']] = e
-            
-            c += 2
-            if c >= 4: # 2 columnas visuales
-                c = 0
-                r += 1
-        form.columnconfigure((1, 3), weight=1)
+        Label(ventana,text="Modelo").pack(pady=15)
+        Modelo = StringVar()
+        txt_Modelo= Entry(ventana,textvariable=Modelo)
+        txt_Modelo.pack()
 
-        # Botones
-        btns = ttk.Frame(self)
-        btns.pack(fill=tk.X, padx=20, pady=10)
-        ttk.Button(btns, text="Agregar", command=self.add).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btns, text="Modificar", command=self.mod).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btns, text="Eliminar", command=self.dele).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btns, text="Limpiar", command=self.clear).pack(side=tk.RIGHT, padx=5)
+        Label(ventana,text="Velocidad").pack(pady=15)
+        Velocidad = StringVar()
+        txt_Velocidad= Entry(ventana,textvariable=Velocidad)
+        txt_Velocidad.pack()
 
-        # Tabla
-        tree_f = ttk.Frame(self)
-        tree_f.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
-        cols = [c['name'] for c in self.columnas_config]
-        self.tree = ttk.Treeview(tree_f, columns=cols, show="headings")
-        
-        sb_y = ttk.Scrollbar(tree_f, orient=tk.VERTICAL, command=self.tree.yview)
-        sb_x = ttk.Scrollbar(tree_f, orient=tk.HORIZONTAL, command=self.tree.xview)
-        self.tree.configure(yscroll=sb_y.set, xscroll=sb_x.set)
-        
-        sb_y.pack(side=tk.RIGHT, fill=tk.Y)
-        sb_x.pack(side=tk.BOTTOM, fill=tk.X)
-        self.tree.pack(fill=tk.BOTH, expand=True)
-        
-        for col in self.columnas_config:
-            self.tree.heading(col['name'], text=col['label'])
-            self.tree.column(col['name'], width=90, anchor=tk.CENTER)
-        
-        self.tree.bind("<<TreeviewSelect>>", self.on_select)
+        Label(ventana,text="Caballaje").pack(pady=15)
+        Caballaje = StringVar()
+        txt_Caballaje= Entry(ventana,textvariable=Caballaje)
+        txt_Caballaje.pack()
 
-    def on_select(self, e):
-        sel = self.tree.selection()
-        if sel:
-            vals = self.tree.item(sel[0])['values']
-            self.selected_id = vals[0]
-            idx = 1
-            for col in self.columnas_config:
-                if col['name'] == 'ID': continue
-                if col['name'] in self.entries:
-                    self.entries[col['name']].delete(0, tk.END)
-                    self.entries[col['name']].insert(0, vals[idx])
-                idx += 1
+        Label(ventana,text="Plazas").pack(pady=15)
+        Plazas = StringVar()
+        txt_Plazas= Entry(ventana,textvariable=Plazas)
+        txt_Plazas.pack()
 
-    def get_data(self):
-        d = []
-        for col in self.columnas_config:
-            if col['name'] == 'ID': continue
-            v = self.entries[col['name']].get()
-            if not v:
-                messagebox.showwarning("Faltan datos", f"El campo {col['label']} es obligatorio")
-                return None
-            d.append(v)
-        return tuple(d)
 
-    def clear(self):
-        self.selected_id = None
-        self.tree.selection_remove(self.tree.selection())
-        for e in self.entries.values():
-            e.delete(0, tk.END)
-            if isinstance(e, ttk.Combobox): e.set('')
 
-    def add(self): self.controller.agregar(self.get_data())
-    def mod(self): self.controller.modificar(self.selected_id, self.get_data())
-    def dele(self): self.controller.eliminar(self.selected_id)
+        Button(ventana,text="Actualizar",width=15,command=lambda:"").pack(pady=15)
+        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
-    def update_treeView(self, data):
-        self.clear()
-        for i in self.tree.get_children(): self.tree.delete(i)
-        for r in data: self.tree.insert("", tk.END, values=r)
-
-class CochesView(BaseCrudView):
-    def __init__(self, parent, controller):
-        cols = [
-            {'name': 'ID', 'label': 'ID'},
-            {'name': 'Color', 'label': 'Color'},
-            {'name': 'Marca', 'label': 'Marca'},
-            {'name': 'Modelo', 'label': 'Modelo'},
-            {'name': 'Velocidad', 'label': 'Velocidad'},
-            {'name': 'Caballaje', 'label': 'Caballaje'},
-            {'name': 'Plazas', 'label': 'Plazas'},
-        ]
-        super().__init__(parent, controller, "Gestión de Coches", cols)
-
-class CamionetasView(BaseCrudView):
-    def __init__(self, parent, controller):
-        cols = [
-            {'name': 'ID', 'label': 'ID'},
-            {'name': 'Marca', 'label': 'Marca'},
-            {'name': 'Color', 'label': 'Color'},
-            {'name': 'Modelo', 'label': 'Modelo'},
-            {'name': 'Velocidad', 'label': 'Velocidad'},
-            {'name': 'Caballaje', 'label': 'Caballaje'},
-            {'name': 'Plazas', 'label': 'Plazas'},
-            {'name': 'Traccion', 'label': 'Tracción'},
-            {'name': 'Cerrada', 'label': 'Cerrada (1=Sí/0=No)', 'type': 'combobox', 'values': ['1', '0']},
-        ]
-        super().__init__(parent, controller, "Gestión de Camionetas", cols)
-
-class CamionesView(BaseCrudView):
-    def __init__(self, parent, controller):
-        cols = [
-            {'name': 'ID', 'label': 'ID'},
-            {'name': 'Color', 'label': 'Color'},
-            {'name': 'Marca', 'label': 'Marca'},
-            {'name': 'Modelo', 'label': 'Modelo'},
-            {'name': 'Velocidad', 'label': 'Velocidad'},
-            {'name': 'Caballaje', 'label': 'Caballaje'},
-            {'name': 'Plazas', 'label': 'Plazas'},
-            {'name': 'Eje', 'label': 'Ejes'},
-            {'name': 'Capacidad', 'label': 'Capacidad'},
-        ]
-        super().__init__(parent, controller, "Gestión de Camiones", cols)
+    @staticmethod
+    def eliminar(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        Label(ventana,text=f".::Eliminar {tipo}::.").pack()
+        Label(ventana,text="ID del registro a eliminar").pack(pady=15)
+        txt_id= Entry(ventana)
+        txt_id.pack()
+        txt_id.focus()
+        Button(ventana,text="Eliminar",width=15,command=lambda:"").pack(pady=15)
+        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
