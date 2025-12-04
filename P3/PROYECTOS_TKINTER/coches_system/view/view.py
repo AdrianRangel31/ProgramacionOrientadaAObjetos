@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk, messagebox
+from controller.controller import Controlador 
 
 
 class Vista:
@@ -29,7 +30,7 @@ class Vista:
         Label(ventana,text=f".::Menú principal {tipo}::.").pack()
         Button(ventana,text="1.-Insertar",width=15,command=lambda:Vista.insertar(ventana,tipo)).pack(pady=15)
         Button(ventana,text="2.-Consultar",width=15,command=lambda:Vista.consultar(ventana,tipo)).pack(pady=15)
-        Button(ventana,text="3.-Actualizar",width=15,command=lambda:Vista.actualizar(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="3.-Actualizar",width=15,command=lambda:Vista.buscar_id(ventana,tipo)).pack(pady=15)
         Button(ventana,text="4.-Eliminar",width=15,command=lambda:Vista.eliminar(ventana,tipo)).pack(pady=15)
         Button(ventana,text="5.-Regresar",width=15,command=lambda:Vista.menu_principal(ventana)).pack(pady=15)
 
@@ -44,10 +45,15 @@ class Vista:
                 Vista.insertar_camiones(ventana,tipo)
 
     @staticmethod
-    def actualizar(ventana,tipo):
+    def actualizar(ventana,tipo,id):
         match tipo:
             case "Autos":
-                Vista.actualizar_autos(ventana,tipo)
+                datos = Controlador.buscar_auto(id)
+                if datos:
+                    Vista.actualizar_autos(ventana,tipo,datos,id)
+                else:
+                    messagebox.showerror("Advertencia",f"No se encontró el registro con ID: {id}")
+
             case "Camionetas":
                 Vista.actualizar_camionetas(ventana,tipo)
             case "Camiones":
@@ -74,7 +80,6 @@ class Vista:
             case "Camiones":
                 Vista.eliminar_camiones(ventana,tipo)
 
-        
         
     @staticmethod
     def insertar_autos(ventana,tipo):
@@ -114,7 +119,7 @@ class Vista:
         Plazas = StringVar()
         txt_Plazas= Entry(frame_entry,textvariable=Plazas)
         txt_Plazas.grid(row=1,column=6)
-        Button(ventana,text="Guardar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="Guardar",width=15,command=lambda:Controlador.insertar_autos(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get())).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
@@ -220,44 +225,45 @@ class Vista:
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
-    def actualizar_autos(ventana,tipo):
+    def actualizar_autos(ventana,tipo,datos,id):
         Vista.limpiar_ventana(ventana)
         Label(ventana,text=f".::Actualizar Autos::.").pack()
 
+        auto = datos[0]
         frame_entry = Frame(ventana)
         frame_entry.pack()
 
         Label(frame_entry,text="Marca").grid(row=0,column=1)
-        marca = StringVar()
+        marca = StringVar(value=auto[2])
         txt_marca= Entry(frame_entry,textvariable=marca)
         txt_marca.grid(row=0,column=2)
         txt_marca.focus()
 
         Label(frame_entry,text="Color").grid(row=0,column=3)
-        Color = StringVar()
+        Color = StringVar(value=auto[1])
         txt_Color= Entry(frame_entry,textvariable=Color)
         txt_Color.grid(row=0,column=4)
         
         Label(frame_entry,text="Modelo").grid(row=0,column=5)
-        Modelo = StringVar()
+        Modelo = StringVar(value=auto[3])
         txt_Modelo= Entry(frame_entry,textvariable=Modelo)
         txt_Modelo.grid(row=0,column=6)
 
         Label(frame_entry,text="Velocidad").grid(row=1,column=1)
-        Velocidad = StringVar()
+        Velocidad = StringVar(value=str(auto[4]))
         txt_Velocidad= Entry(frame_entry,textvariable=Velocidad)
         txt_Velocidad.grid(row=1,column=2)
 
         Label(frame_entry,text="Caballaje").grid(row=1,column=3)
-        Caballaje = StringVar()
+        Caballaje = StringVar(value=str(auto[5]))
         txt_Caballaje= Entry(frame_entry,textvariable=Caballaje)
         txt_Caballaje.grid(row=1,column=4)
-
+        
         Label(frame_entry,text="Plazas").grid(row=1,column=5)
-        Plazas = StringVar()
+        Plazas = StringVar(value=str(auto[6]))
         txt_Plazas= Entry(frame_entry,textvariable=Plazas)
         txt_Plazas.grid(row=1,column=6)
-        Button(ventana,text="Actualizar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="Actualizar",width=15,command=lambda:Controlador.cambiar_autos(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get(),id)).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
@@ -362,8 +368,6 @@ class Vista:
         Button(ventana,text="Actualizar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
-
-
     @staticmethod
     def consultar_autos(ventana,tipo):
         Vista.limpiar_ventana(ventana)
@@ -374,9 +378,14 @@ class Vista:
         columns = ("ID", "Color", "Marca", "Modelo", "Velocidad", "Caballaje", "Plazas")
         widths = [50, 100, 120, 100, 80, 100, 70]  # anchos por columna
         tabla = ttk.Treeview(frame_tabla, columns=columns, show="headings")
+
         for col, w in zip(columns, widths):
             tabla.heading(col, text=col)
             tabla.column(col, width=w, anchor="center")
+
+        registros = Controlador.consultar_autos()
+        for row in registros:
+            tabla.insert("", "end", values=row)
         tabla.pack(fill="both", expand=True)
         
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
@@ -415,7 +424,6 @@ class Vista:
         
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
-
     @staticmethod
     def eliminar_autos(ventana,tipo):
         Vista.limpiar_ventana(ventana)
@@ -424,8 +432,9 @@ class Vista:
         txt_id= Entry(ventana)
         txt_id.pack()
         txt_id.focus()
-        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
-
+        Button(ventana,text="Eliminar",width=15,command=lambda:Controlador.borrar_autos(txt_id.get())).pack(pady=15)
+        btn_volver = Button(ventana,text="Volver", command=lambda:Vista.menu_acciones(ventana,tipo))
+        btn_volver.pack()
     @staticmethod
     def eliminar_camionetas(ventana,tipo):
         Vista.limpiar_ventana(ventana)
@@ -445,3 +454,21 @@ class Vista:
         txt_id.pack()
         txt_id.focus()
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+
+    @staticmethod
+    def buscar_id(ventana,tipo):
+        Vista.limpiar_ventana(ventana)
+        lbl_titulo = Label(ventana,text=f".::Buscar un {tipo}::.",font=("Arial",16))
+        lbl_titulo.pack(padx=5)
+        id = IntVar()
+        Label(ventana,text="ID del registro : ").pack()
+        txt_id = Entry(ventana,textvariable=id)
+        txt_id.pack()
+        txt_id.focus()
+
+        btn_buscar = Button(ventana,text="Buscar", command=lambda:Vista.actualizar(ventana,tipo,id.get()))
+        btn_buscar.pack()
+    
+
+        btn_volver = Button(ventana,text="Volver", command=lambda:Vista.menu_acciones(ventana,tipo))
+        btn_volver.pack()
