@@ -45,16 +45,6 @@ class AutosBD:
             return False
 
 class CamionetasBD:
-    def __init__(self,marca,color,modelo,velocidad,caballaje,plazas,traccion,cerrada):
-        self._marca = marca
-        self._color = color
-        self._modelo = modelo
-        self._velocidad = velocidad
-        self._caballaje = caballaje
-        self._plazas = plazas
-        self._traccion = traccion
-        self._cerrada = cerrada
-
     @staticmethod
     def insertar(color,marca,modelo,velocidad,potencia,plazas,traccion,cerrada):
         try:
@@ -91,17 +81,15 @@ class CamionetasBD:
         except:
             return False
         
+    @staticmethod
+    def buscar(id):
+        try:
+            cursor.execute(f"Select * from camionetas where id_camionetas = {id}")
+            return cursor.fetchall()
+        except:
+            return False
+        
 class CamionesBD:
-    def __init__(self,marca,color,modelo,velocidad,caballaje,plazas,eje,capacidad):
-        self._marca = marca
-        self._color = color
-        self._modelo = modelo
-        self._velocidad = velocidad
-        self._caballaje = caballaje
-        self._plazas = plazas
-        self._eje = eje
-        self._capacidad = capacidad
-
     @staticmethod
     def insertar(color,marca,modelo,velocidad,potencia,plazas,eje,capacidad):
         try:
@@ -138,3 +126,10 @@ class CamionesBD:
         except:
             return False
 
+    @staticmethod
+    def buscar(id):
+        try:
+            cursor.execute(f"Select * from camiones where id_camiones = {id}")
+            return cursor.fetchall()
+        except:
+            return False

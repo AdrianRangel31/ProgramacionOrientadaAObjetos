@@ -55,9 +55,18 @@ class Vista:
                     messagebox.showerror("Advertencia",f"No se encontró el registro con ID: {id}")
 
             case "Camionetas":
-                Vista.actualizar_camionetas(ventana,tipo)
+                datos = Controlador.buscar_camionetas(id)
+                if datos:
+                    Vista.actualizar_camionetas(ventana,tipo,datos,id)
+                else:
+                    messagebox.showerror("Advertencia",f"No se encontró el registro con ID: {id}")
+
             case "Camiones":
-                Vista.actualizar_camiones(ventana,tipo)
+                datos = Controlador.buscar_camiones(id)
+                if datos:
+                    Vista.actualizar_camiones(ventana,tipo,datos,id)
+                else:
+                    messagebox.showerror("Advertencia",f"No se encontró el registro con ID: {id}")
 
 
     @staticmethod
@@ -170,7 +179,7 @@ class Vista:
         Cerrada = StringVar()
         txt_Cerrada= Entry(frame_entry,textvariable=Cerrada)
         txt_Cerrada.grid(row=2,column=4)
-        Button(ventana,text="Guardar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="Guardar",width=15,command=lambda:Controlador.insertar_camionetas(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get(),Traccion.get(),Cerrada.get())).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
@@ -221,7 +230,7 @@ class Vista:
         Capacidad = StringVar()
         txt_Capacidad= Entry(frame_entry,textvariable=Capacidad)
         txt_Capacidad.grid(row=2,column=4)
-        Button(ventana,text="Guardar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        Button(ventana,text="Guardar",width=15,command=lambda:Controlador.insertar_camiones(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get(),Eje.get(),Capacidad.get())).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
@@ -267,105 +276,113 @@ class Vista:
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
-    def actualizar_camionetas(ventana,tipo):
+    def actualizar_camionetas(ventana,tipo,datos,id):
         Vista.limpiar_ventana(ventana)
         Label(ventana,text=f".::Actualizar Camionetas::.").pack()
 
+        camioneta = datos[0]
         frame_entry = Frame(ventana)
         frame_entry.pack()
 
         Label(frame_entry,text="Marca").grid(row=0,column=1)
-        marca = StringVar()
+        marca = StringVar(value=camioneta[2])
         txt_marca= Entry(frame_entry,textvariable=marca)
         txt_marca.grid(row=0,column=2)
         txt_marca.focus()
 
         Label(frame_entry,text="Color").grid(row=0,column=3)
-        Color = StringVar()
+        Color = StringVar(value=camioneta[1])
         txt_Color= Entry(frame_entry,textvariable=Color)
         txt_Color.grid(row=0,column=4)
         
         Label(frame_entry,text="Modelo").grid(row=0,column=5)
-        Modelo = StringVar()
+        Modelo = StringVar(value=camioneta[3])
         txt_Modelo= Entry(frame_entry,textvariable=Modelo)
         txt_Modelo.grid(row=0,column=6)
 
         Label(frame_entry,text="Velocidad").grid(row=1,column=1)
-        Velocidad = StringVar()
+        Velocidad = StringVar(value=str(camioneta[4]))
         txt_Velocidad= Entry(frame_entry,textvariable=Velocidad)
         txt_Velocidad.grid(row=1,column=2)
 
         Label(frame_entry,text="Caballaje").grid(row=1,column=3)
-        Caballaje = StringVar()
+        Caballaje = StringVar(value=str(camioneta[5]))
         txt_Caballaje= Entry(frame_entry,textvariable=Caballaje)
         txt_Caballaje.grid(row=1,column=4)
-
+        
         Label(frame_entry,text="Plazas").grid(row=1,column=5)
-        Plazas = StringVar()
+        Plazas = StringVar(value=str(camioneta[6]))
         txt_Plazas= Entry(frame_entry,textvariable=Plazas)
         txt_Plazas.grid(row=1,column=6)
 
-        Label(frame_entry,text="Tracción").grid(row=2,column=1)
-        Traccion = StringVar()
+        
+        Label(frame_entry,text="Traccion").grid(row=2,column=2)
+        Traccion = StringVar(value=str(camioneta[7]))
         txt_Traccion= Entry(frame_entry,textvariable=Traccion)
-        txt_Traccion.grid(row=2,column=2)
+        txt_Traccion.grid(row=2,column=3)
 
-        Label(frame_entry,text="Cerrada").grid(row=2,column=3)
-        Cerrada = StringVar()
+        
+        Label(frame_entry,text="Cerrada").grid(row=2,column=4)
+        Cerrada = StringVar(value=str(camioneta[8]))
         txt_Cerrada= Entry(frame_entry,textvariable=Cerrada)
-        txt_Cerrada.grid(row=2,column=4)
-        Button(ventana,text="Actualizar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        txt_Cerrada.grid(row=2,column=5)
+
+        Button(ventana,text="Actualizar",width=15,command=lambda:Controlador.cambiar_camionetas(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get(),Traccion.get(),Cerrada.get(),id)).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
-    def actualizar_camiones(ventana,tipo):
+    def actualizar_camiones(ventana,tipo,datos,id):
         Vista.limpiar_ventana(ventana)
-        Label(ventana,text=f".::Actualizar Camionetas::.").pack()
+        Label(ventana,text=f".::Actualizar Camiones::.").pack()
 
+        camion = datos[0]
         frame_entry = Frame(ventana)
         frame_entry.pack()
 
         Label(frame_entry,text="Marca").grid(row=0,column=1)
-        marca = StringVar()
+        marca = StringVar(value=camion[2])
         txt_marca= Entry(frame_entry,textvariable=marca)
         txt_marca.grid(row=0,column=2)
         txt_marca.focus()
 
         Label(frame_entry,text="Color").grid(row=0,column=3)
-        Color = StringVar()
+        Color = StringVar(value=camion[1])
         txt_Color= Entry(frame_entry,textvariable=Color)
         txt_Color.grid(row=0,column=4)
         
         Label(frame_entry,text="Modelo").grid(row=0,column=5)
-        Modelo = StringVar()
+        Modelo = StringVar(value=camion[3])
         txt_Modelo= Entry(frame_entry,textvariable=Modelo)
         txt_Modelo.grid(row=0,column=6)
 
         Label(frame_entry,text="Velocidad").grid(row=1,column=1)
-        Velocidad = StringVar()
+        Velocidad = StringVar(value=str(camion[4]))
         txt_Velocidad= Entry(frame_entry,textvariable=Velocidad)
         txt_Velocidad.grid(row=1,column=2)
 
         Label(frame_entry,text="Caballaje").grid(row=1,column=3)
-        Caballaje = StringVar()
+        Caballaje = StringVar(value=str(camion[5]))
         txt_Caballaje= Entry(frame_entry,textvariable=Caballaje)
         txt_Caballaje.grid(row=1,column=4)
-
+        
         Label(frame_entry,text="Plazas").grid(row=1,column=5)
-        Plazas = StringVar()
+        Plazas = StringVar(value=str(camion[6]))
         txt_Plazas= Entry(frame_entry,textvariable=Plazas)
         txt_Plazas.grid(row=1,column=6)
 
-        Label(frame_entry,text="Eje").grid(row=2,column=1)
-        Eje = StringVar()
+        
+        Label(frame_entry,text="Eje").grid(row=2,column=2)
+        Eje = StringVar(value=str(camion[7]))
         txt_Eje= Entry(frame_entry,textvariable=Eje)
-        txt_Eje.grid(row=2,column=2)
+        txt_Eje.grid(row=2,column=3)
 
-        Label(frame_entry,text="Capacidad").grid(row=2,column=3)
-        Capacidad = StringVar()
+        
+        Label(frame_entry,text="Capacidad").grid(row=2,column=4)
+        Capacidad = StringVar(value=str(camion[8]))
         txt_Capacidad= Entry(frame_entry,textvariable=Capacidad)
-        txt_Capacidad.grid(row=2,column=4)
-        Button(ventana,text="Actualizar",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
+        txt_Capacidad.grid(row=2,column=5)
+
+        Button(ventana,text="Actualizar",width=15,command=lambda:Controlador.cambiar_camiones(Color.get(),marca.get(),Modelo.get(),Velocidad.get(),Caballaje.get(),Plazas.get(),Eje.get(),Capacidad.get(),id)).pack(pady=15)
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
 
     @staticmethod
@@ -403,6 +420,11 @@ class Vista:
         for col, w in zip(columns, widths):
             tabla.heading(col, text=col)
             tabla.column(col, width=w, anchor="center")
+
+        registros = Controlador.consultar_camionetas()
+        for row in registros:
+            tabla.insert("", "end", values=row)
+        
         tabla.pack(fill="both", expand=True)
         
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
@@ -420,6 +442,11 @@ class Vista:
         for col, w in zip(columns, widths):
             tabla.heading(col, text=col)
             tabla.column(col, width=w, anchor="center")
+
+        registros = Controlador.consultar_camiones()
+        for row in registros:
+            tabla.insert("", "end", values=row)
+
         tabla.pack(fill="both", expand=True)
         
         Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
@@ -443,8 +470,9 @@ class Vista:
         txt_id= Entry(ventana)
         txt_id.pack()
         txt_id.focus()
-        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
-
+        Button(ventana,text="Eliminar",width=15,command=lambda:Controlador.borrar_camionetas(txt_id.get())).pack(pady=15)
+        btn_volver = Button(ventana,text="Volver", command=lambda:Vista.menu_acciones(ventana,tipo))
+        btn_volver.pack()
     @staticmethod
     def eliminar_camiones(ventana,tipo):
         Vista.limpiar_ventana(ventana)
@@ -453,8 +481,9 @@ class Vista:
         txt_id= Entry(ventana)
         txt_id.pack()
         txt_id.focus()
-        Button(ventana,text="Volver",width=15,command=lambda:Vista.menu_acciones(ventana,tipo)).pack(pady=15)
-
+        Button(ventana,text="Eliminar",width=15,command=lambda:Controlador.borrar_camiones(txt_id.get())).pack(pady=15)
+        btn_volver = Button(ventana,text="Volver", command=lambda:Vista.menu_acciones(ventana,tipo))
+        btn_volver.pack()
     @staticmethod
     def buscar_id(ventana,tipo):
         Vista.limpiar_ventana(ventana)
