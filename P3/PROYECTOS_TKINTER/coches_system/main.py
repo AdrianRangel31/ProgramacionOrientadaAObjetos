@@ -33,7 +33,6 @@ class App:
     def __init__(self,ventana):
         vista = view.Vista(ventana)
 
-
 if __name__ == "__main__":
     ventana = Tk()
     app = App(ventana)

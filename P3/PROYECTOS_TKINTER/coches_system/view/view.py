@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from controller.controller import Controlador 
 
-
 class Vista:
     def __init__(self,ventana:Tk):
         ventana.title("Sistema de Gestión de autos")
